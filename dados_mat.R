@@ -8,9 +8,11 @@ if(!require(data.table)){install.packages('data.table')}
 #    Linux   setwd("/home")
 #--------------------
 
-#library(tidyr)
+library(tidyr)
+library(dplyr)
+library(ggplot2)
 
-setwd("C:\\Users\\User\\Desktop\\Mateus\\ufmg\\Iniciacao_cientifica\\enem\\info_enem\\DADOS")  
+setwd("C:\\Users\\User\\Desktop\\Mateus\\ufmg\\Iniciacao_cientifica\\enem\\info_enem\\DADOS\\R_analise")  
 
 #---------------
 # Aloca��o de mem�ria
@@ -22,7 +24,7 @@ memory.limit(24576)
 
 #itens_2022 <- data.table::fread(input='itens_prova_2022.csv',integer64='character')
 
-data <- data.table::fread(input= 'microdados_enem_2022.csv',integer64='character', nrows = 10)
+data <- data.table::fread(input= 'microdados_enem_2022.csv',integer64='character', nrows = 500000)
 
 dados_matematica <- data.frame(data$CO_PROVA_MT, data$TX_RESPOSTAS_MT)
 
@@ -34,7 +36,7 @@ dados_matematica <- separate(dados_matematica, data.TX_RESPOSTAS_MT, into = past
 # Remova a coluna original "TX_RESPOSTAS_MT" que não é mais necessária
 dados_matematica <- dados_matematica[, -2]
 
-library(dplyr)
+
 
 # Substitua "seu_data_frame" pelo nome do seu data frame
 resultado <- dados_matematica %>%
@@ -45,5 +47,10 @@ resultado <- dados_matematica %>%
   count() %>%
   arrange(Coluna, desc(n))
 
+ggplot(resultado) +
+  aes(x = value, y = n) +
+  geom_col(fill = "#112446") +
+  theme_minimal() +
+  facet_wrap(vars(Coluna))
 
 
